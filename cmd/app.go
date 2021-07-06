@@ -39,10 +39,10 @@ type handler struct {
 
 func NewHandler() Handler {
 	// DI
-	repository := UserRepository{db}
-	service := UserService{&repository}
-	controller := UserController{&service}
-	app := App{&controller}
+	repository := UserRepositoryImpl{db}
+	service := UserServiceImpl{repository}
+	controller := UserControllerImpl{service}
+	app := App{controller}
 
 	return handler{&app}
 }
@@ -74,7 +74,7 @@ TODO: 要不要の検討, 修正.
 */
 
 type App struct {
-	userController *UserController
+	userController UserController
 }
 
 func (app App) ExecGetUser(id string) UserAccount {
@@ -84,36 +84,45 @@ func (app App) ExecGetUser(id string) UserAccount {
 /**
 Controller
 */
-
-type UserController struct {
-	userService *UserService
+type UserController interface {
+	GetUser(id string) UserAccount
 }
 
-func (uc UserController) GetUser(id string) UserAccount {
+type UserControllerImpl struct {
+	userService UserService
+}
+
+func (uc UserControllerImpl) GetUser(id string) UserAccount {
 	return uc.userService.GetUser(id)
 }
 
 /**
 Service
 */
-
-type UserService struct {
-	userRepository *UserRepository
+type UserService interface {
+	GetUser(id string) UserAccount
 }
 
-func (us UserService) GetUser(id string) UserAccount {
+type UserServiceImpl struct {
+	userRepository UserRepository
+}
+
+func (us UserServiceImpl) GetUser(id string) UserAccount {
 	return us.userRepository.GetUser(id)
 }
 
 /**
 Repository
 */
+type UserRepository interface {
+	GetUser(id string) UserAccount
+}
 
-type UserRepository struct {
+type UserRepositoryImpl struct {
 	dbConnector *sql.DB
 }
 
-func (us UserRepository) GetUser(id string) UserAccount {
+func (us UserRepositoryImpl) GetUser(id string) UserAccount {
 	// 仮
 	// TODO: DBとの接続の実装
 	return UserAccount{
@@ -132,4 +141,3 @@ type UserAccount struct {
 	FirstName string `json:"first_name"`
 	LastName  string `json:"last_name"`
 }
-
