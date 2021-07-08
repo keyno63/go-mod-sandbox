@@ -5,6 +5,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gocql/gocql"
+	"go-mod2/internal/cassandra"
+	"go-mod2/internal/rdb"
+	"log"
 	"net/http"
 )
 
@@ -20,8 +23,20 @@ func main() {
 		handler.ServeHTTP(w, r)
 	})
 
-	cHandler, _ := NewCassandraHandler()
-	mux.Handle("/api/go-app/cass", cHandler)
+	cHandler, err := NewCassandraHandler()
+	if err == nil {
+		mux.Handle("/api/go-app/cass", cHandler)
+	}
+
+	// db 初期化
+	db, err := sql.Open("postgres", "postgres://postgres:pass@127.0.01:5432/postgres?sslmode=disable")
+	if err != nil {
+		log.Fatalln("接続失敗", err)
+	} else {
+		pHandler, _ := NewPostgresHandler(db)
+		mux.Handle("/api/go-app/psql", pHandler)
+	}
+	defer db.Close()
 
 	// server の起動設定
 	server := http.Server{
@@ -37,10 +52,6 @@ type Handler interface {
 	ServeHTTP(w http.ResponseWriter, r *http.Request)
 }
 
-type cassandraHandler struct {
-	session *gocql.Session
-}
-
 func NewCassandraHandler() (Handler, error) {
 
 	cluster := gocql.NewCluster("127.0.0.1")
@@ -52,23 +63,13 @@ func NewCassandraHandler() (Handler, error) {
 		return nil, err
 	}
 
-	return cassandraHandler{session}, nil
+	return cassandra.Handler{
+		Session: session,
+	}, nil
 }
 
-func (c cassandraHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	var id, data, update_time string
-	// SELECT 文は Scan?
-	if err := c.session.Query("SELECT * FROM test_table;").
-		Scan(&id, &data, &update_time); err != nil {
-		fmt.Println("failed")
-		if err == gocql.ErrNotFound {
-			fmt.Println("ErrNotFound")
-		}
-		fmt.Println(err.Error())
-	}
-	v := fmt.Sprintf("write ret: id=[%s], data=[%s], time=[%s]", id, data, update_time)
-	fmt.Println(v)
-	_, _ = w.Write([]byte(v))
+func NewPostgresHandler(db *sql.DB) (Handler, error) {
+	return rdb.PostgresHandler{Db: db}, nil
 }
 
 type handler struct {

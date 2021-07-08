@@ -2,6 +2,7 @@
 
 GOIMAGE=golang:1.16-stretch
 CASSANDRAIMAGE=cassandra:4.0
+POSTGRESIMAGE=postgres:13.3
 
 build:
 	go build cmd/app.go
@@ -17,3 +18,6 @@ rundocker: runcassandra
 
 runcassandra:
 	docker run --rm -d -p 9042:9042 ${CASSANDRAIMAGE}
+
+runpostgres:
+	docker run --rm -d -p 5432:5432 -e POSTGRES_PASSWORD=pass -v ${PWD}/docker/postgres/initdb:/docker-entrypoint-initdb.d ${POSTGRESIMAGE}
