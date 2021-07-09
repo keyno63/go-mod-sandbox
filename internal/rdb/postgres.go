@@ -31,6 +31,7 @@ func (p PostgresHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 		goChan := p.asyncWriteSandboxTable(data)
 		defer close(goChan)
+		w.Header().Set("Content-Type", "application/json")
 		_, _ = w.Write([]byte("ok"))
 		// ここで待ってしまうので注意
 		<-goChan
