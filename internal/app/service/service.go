@@ -12,10 +12,16 @@ type UserService interface {
 	GetUser(id string) model.UserAccount
 }
 
+func NewUserServiceImpl(repository repository.UserRepository) UserService {
+	return UserServiceImpl{
+		repository,
+	}
+}
+
 type UserServiceImpl struct {
-	UserRepository repository.UserRepository
+	userRepository repository.UserRepository
 }
 
 func (us UserServiceImpl) GetUser(id string) model.UserAccount {
-	return us.UserRepository.GetUser(id)
+	return us.userRepository.GetUser(id)
 }

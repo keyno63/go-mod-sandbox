@@ -12,10 +12,16 @@ type UserController interface {
 	GetUser(id string) model.UserAccount
 }
 
+func NewUserController(service service.UserService) UserController {
+	return UserControllerImpl{
+		service,
+	}
+}
+
 type UserControllerImpl struct {
-	UserService service.UserService
+	userService service.UserService
 }
 
 func (uc UserControllerImpl) GetUser(id string) model.UserAccount {
-	return uc.UserService.GetUser(id)
+	return uc.userService.GetUser(id)
 }

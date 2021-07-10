@@ -81,10 +81,10 @@ type handler struct {
 
 func NewHandler(db *sql.DB) Handler {
 	// DI
-	repository := repository.UserRepositoryImpl{db}
-	service := service.UserServiceImpl{repository}
-	controller := controller.UserControllerImpl{service}
-	app := App{controller}
+	r := repository.NewUserRepositoryImpl(db)
+	s := service.NewUserServiceImpl(r)
+	c := controller.NewUserController(s)
+	app := App{c}
 
 	return handler{&app}
 }

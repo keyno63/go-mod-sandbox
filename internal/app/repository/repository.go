@@ -12,8 +12,14 @@ type UserRepository interface {
 	GetUser(id string) model.UserAccount
 }
 
+func NewUserRepositoryImpl(db *sql.DB) UserRepository {
+	return UserRepositoryImpl{
+		dbConnector: db,
+	}
+}
+
 type UserRepositoryImpl struct {
-	DbConnector *sql.DB
+	dbConnector *sql.DB
 }
 
 func (us UserRepositoryImpl) GetUser(id string) model.UserAccount {
