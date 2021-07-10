@@ -2,14 +2,14 @@ package repository
 
 import (
 	"database/sql"
-	"go-mod2/internal/app/model"
+	"go-mod2/internal/app/model/dto"
 )
 
-/**
-Repository
+/*
+UserRepository の実装です
 */
 type UserRepository interface {
-	GetUser(id string) model.UserAccount
+	GetUser(id string) dto.UserDto
 }
 
 func NewUserRepositoryImpl(db *sql.DB) UserRepository {
@@ -22,12 +22,17 @@ type UserRepositoryImpl struct {
 	dbConnector *sql.DB
 }
 
-func (us UserRepositoryImpl) GetUser(id string) model.UserAccount {
-	// 仮
-	// TODO: DBとの接続の実装
-	return model.UserAccount{
-		Id:        id,
-		FirstName: "first",
-		LastName:  "last",
+func (us UserRepositoryImpl) GetUser(id string) dto.UserDto {
+	var ua dto.UserDto
+
+	cmd := "SELECT * FROM user WHERE $1"
+	rows, err := us.dbConnector.Query(cmd, id)
+	if err != nil {
+		return ua
 	}
+	defer rows.Close()
+	if err := rows.Scan(&ua.Id, &ua.FirstName, &ua.LastName); err != nil {
+		return ua
+	}
+	return ua
 }
