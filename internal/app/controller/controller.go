@@ -5,8 +5,8 @@ import (
 	"go-mod2/internal/app/service"
 )
 
-/**
-Controller
+/*
+UserController の実装です
 */
 type UserController interface {
 	GetUser(id string) model.UserAccount
