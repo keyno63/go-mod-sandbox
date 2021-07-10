@@ -5,38 +5,41 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gocql/gocql"
+	"go-mod2/internal/app/controller"
+	"go-mod2/internal/app/model"
+	"go-mod2/internal/app/repository"
+	"go-mod2/internal/app/service"
 	"go-mod2/internal/cassandra"
 	"go-mod2/internal/rdb"
 	"log"
 	"net/http"
 )
 
-var db *sql.DB
-
 // 実行関数
 func main() {
 	// Http Handler の設定
 	mux := http.NewServeMux()
-	handler := NewHandler()
-	mux.Handle("/api/go-app/handle", handler)
-	mux.HandleFunc("/api/go-app/handle2", func(w http.ResponseWriter, r *http.Request) {
-		handler.ServeHTTP(w, r)
-	})
-
-	cHandler, err := NewCassandraHandler()
-	if err == nil {
-		mux.Handle("/api/go-app/cass", cHandler)
-	}
 
 	// db 初期化
 	db, err := sql.Open("postgres", "postgres://postgres:pass@127.0.01:5432/postgres?sslmode=disable")
 	if err != nil {
 		log.Fatalln("接続失敗", err)
 	} else {
+		handler := NewHandler(db)
+		mux.Handle("/api/go-app/handle", handler)
+		mux.HandleFunc("/api/go-app/handle2", func(w http.ResponseWriter, r *http.Request) {
+			handler.ServeHTTP(w, r)
+		})
+
 		pHandler, _ := NewPostgresHandler(db)
 		mux.Handle("/api/go-app/psql", pHandler)
 	}
 	defer db.Close()
+
+	cHandler, err := NewCassandraHandler()
+	if err == nil {
+		mux.Handle("/api/go-app/cass", cHandler)
+	}
 
 	// server の起動設定
 	server := http.Server{
@@ -76,11 +79,11 @@ type handler struct {
 	app *App
 }
 
-func NewHandler() Handler {
+func NewHandler(db *sql.DB) Handler {
 	// DI
-	repository := UserRepositoryImpl{db}
-	service := UserServiceImpl{repository}
-	controller := UserControllerImpl{service}
+	repository := repository.UserRepositoryImpl{db}
+	service := service.UserServiceImpl{repository}
+	controller := controller.UserControllerImpl{service}
 	app := App{controller}
 
 	return handler{&app}
@@ -113,70 +116,9 @@ TODO: 要不要の検討, 修正.
 */
 
 type App struct {
-	userController UserController
+	userController controller.UserController
 }
 
-func (app App) ExecGetUser(id string) UserAccount {
+func (app App) ExecGetUser(id string) model.UserAccount {
 	return app.userController.GetUser(id)
-}
-
-/**
-Controller
-*/
-type UserController interface {
-	GetUser(id string) UserAccount
-}
-
-type UserControllerImpl struct {
-	userService UserService
-}
-
-func (uc UserControllerImpl) GetUser(id string) UserAccount {
-	return uc.userService.GetUser(id)
-}
-
-/**
-Service
-*/
-type UserService interface {
-	GetUser(id string) UserAccount
-}
-
-type UserServiceImpl struct {
-	userRepository UserRepository
-}
-
-func (us UserServiceImpl) GetUser(id string) UserAccount {
-	return us.userRepository.GetUser(id)
-}
-
-/**
-Repository
-*/
-type UserRepository interface {
-	GetUser(id string) UserAccount
-}
-
-type UserRepositoryImpl struct {
-	dbConnector *sql.DB
-}
-
-func (us UserRepositoryImpl) GetUser(id string) UserAccount {
-	// 仮
-	// TODO: DBとの接続の実装
-	return UserAccount{
-		Id:        id,
-		FirstName: "first",
-		LastName:  "last",
-	}
-}
-
-/**
-  data struct
-*/
-
-type UserAccount struct {
-	Id        string `json:"id"`
-	FirstName string `json:"first_name"`
-	LastName  string `json:"last_name"`
 }
