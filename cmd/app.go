@@ -92,7 +92,16 @@ func NewHandler(db *sql.DB) Handler {
 func (h handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	userId := r.FormValue("user_id")
-	user := h.app.ExecGetUser(userId)
+	user, err := h.app.ExecGetUser(userId)
+	if err != nil {
+		w.Header().Set("Content-Type", "application/json")
+		//_, _ = fmt.Fprintf(w, "sample handle")
+		_, err := w.Write([]byte("{\"res\": \"NG\""))
+		if err != nil {
+			fmt.Printf("occured error: " + err.Error())
+		}
+		return
+	}
 
 	jsonUser, _ := json.Marshal(user)
 
@@ -119,6 +128,6 @@ type App struct {
 	userController controller.UserController
 }
 
-func (app App) ExecGetUser(id string) model.UserAccount {
+func (app App) ExecGetUser(id string) (*model.UserAccount, error) {
 	return app.userController.GetUser(id)
 }
