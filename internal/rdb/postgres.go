@@ -29,7 +29,8 @@ func (p PostgresHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			Name:     r.FormValue("name"),
 			Category: r.FormValue("c"),
 		}
-		goChan := p.asyncWriteSandboxTable(data)
+		goChan := make(chan sql.Result)
+		p.asyncWriteSandboxTable(data, goChan)
 		defer close(goChan)
 		w.Header().Set("Content-Type", "application/json")
 		_, _ = w.Write([]byte("ok"))
@@ -54,8 +55,7 @@ func (p PostgresHandler) search(w http.ResponseWriter) {
 	_, _ = w.Write(jsonValue)
 }
 
-func (p PostgresHandler) asyncWriteSandboxTable(d Data) chan sql.Result {
-	goChan := make(chan sql.Result)
+func (p PostgresHandler) asyncWriteSandboxTable(d Data, channel chan<- sql.Result) {
 	go func() {
 		// 非同期の確認のために wait 入れている
 		time.Sleep(10 * time.Second)
@@ -63,9 +63,8 @@ func (p PostgresHandler) asyncWriteSandboxTable(d Data) chan sql.Result {
 		if err != nil {
 			fmt.Println("failed syncWriteSandboxTable: ", err)
 		}
-		goChan <- *r
+		channel <- *r
 	}()
-	return goChan
 }
 
 func (p PostgresHandler) syncWriteSandboxTable(d Data) (*sql.Result, error) {
