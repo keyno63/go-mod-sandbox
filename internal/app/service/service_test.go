@@ -2,8 +2,10 @@ package service
 
 import (
 	"fmt"
+	"github.com/golang/mock/gomock"
 	"go-mod2/internal/app/model"
 	"go-mod2/internal/app/repository"
+	"go-mod2/mock"
 	"reflect"
 	"testing"
 )
@@ -83,4 +85,32 @@ func TestUserServiceImpl_GetUser(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestUserServiceImpl_GetUser_(t *testing.T) {
+	// mock controller の生成
+	ctrl := gomock.NewController(t)
+	// mock モジュールの生成
+	mockRepository := mock.NewMockUserRepository(ctrl)
+
+	// 戻り値の設定
+	ret := model.UserAccount{
+		Id:        "1",
+		FirstName: "name",
+	}
+	// mock の振る舞い定義
+	mockRepository.EXPECT().GetUser("1").Return(&ret, nil)
+
+	// テスト対象の生成
+	target := UserServiceImpl{mockRepository}
+	// テスト対象のメソッド実行、実際の値取得
+	actual, _ := target.GetUser("1")
+
+	// DeepEqual による比較
+	if reflect.DeepEqual(actual, ret) {
+		fmt.Printf("success \n")
+		return
+	}
+	// DeepEqual で等価にならなかった場合
+	fmt.Errorf("failed")
 }
