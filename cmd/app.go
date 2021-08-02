@@ -98,7 +98,7 @@ func (h handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		//_, _ = fmt.Fprintf(w, "sample handle")
 		_, err := w.Write([]byte("{\"res\": \"NG\""))
 		if err != nil {
-			fmt.Printf("occured error: " + err.Error())
+			fmt.Printf("occured error: %s\n", err.Error())
 		}
 		return
 	}
@@ -112,10 +112,10 @@ func (h handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	//_, _ = fmt.Fprintf(w, "sample handle")
 	ret, err := w.Write(jsonUser)
 	if err != nil {
-		fmt.Printf("occured error: " + err.Error())
+		fmt.Printf("occured error: %s \n", err.Error())
 	}
 
-	fmt.Println("write ret: " + string(rune(ret)))
+	fmt.Printf("write ret: %d\n",ret)
 }
 
 /**
