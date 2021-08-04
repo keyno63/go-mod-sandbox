@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"compress/gzip"
 	"fmt"
+	"net/http"
 )
 
 // GzipWrite は文字列 value を gzip 圧縮して書き込む
@@ -46,4 +47,23 @@ func GzipRead(value string) (string, error) {
 	}
 
 	return result.String(), nil
+}
+
+// GzipHttpWriter は HTTP Response の書き出し
+func GzipHttpWriter(w http.ResponseWriter, statusCode int, headerMap map[string]string, body string) {
+	// Header などの書き込み設定がしたければ
+	for k, v := range headerMap {
+		w.Header().Add(k, v)
+	}
+
+	// status code の書き込み設定
+	w.WriteHeader(statusCode)
+	gw := gzip.NewWriter(w)
+	defer gw.Close()
+
+	// body の書き込み、表示
+	_, err := gw.Write([]byte(body))
+	if err != nil {
+		_ = fmt.Errorf("failed to write. error=[%s]", err.Error())
+	}
 }
