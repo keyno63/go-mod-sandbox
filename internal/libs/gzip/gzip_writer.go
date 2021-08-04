@@ -17,13 +17,18 @@ func GzipWrite(value string) (string, error) {
 	// 生の値を書き込む（gzip 圧縮する）
 	_, err := gw.Write([]byte(value))
 	if err != nil {
+		_ = gw.Close()
 		return "", fmt.Errorf("failed to write. error=[%s].", err.Error())
 	}
 
 	err = gw.Flush()
 	if err != nil {
+		_ = gw.Close()
 		return "", fmt.Errorf("failed to flush. error=[%s].", err.Error())
 	}
+	// compress 後の値を返したい場合は
+	// defer ではなく return　前に閉じる
+	_ = gw.Close()
 	return buf.String(), nil
 }
 
