@@ -6,8 +6,8 @@ import (
 	"fmt"
 )
 
-// gzipWrite は文字列 value を gzip 圧縮して書き込む
-func gzipWrite(value string) (string, error) {
+// GzipWrite は文字列 value を gzip 圧縮して書き込む
+func GzipWrite(value string) (string, error) {
 
 	// byte buffer に書き込む
 	buf := bytes.NewBuffer([]byte(""))
@@ -19,11 +19,15 @@ func gzipWrite(value string) (string, error) {
 		return "", fmt.Errorf("failed to write. error=[%s].", err.Error())
 	}
 
+	err = gw.Flush()
+	if err != nil {
+		return "", fmt.Errorf("failed to flush. error=[%s].", err.Error())
+	}
 	return buf.String(), nil
 }
 
-// gzipRead は gzip 圧縮された文字列 value の読み込み
-func gzipRead(value string) (string, error) {
+// GzipRead は gzip 圧縮された文字列 value の読み込み
+func GzipRead(value string) (string, error) {
 	// 読み込みたいgzip圧縮された値を byte buffer に変換
 	buf := bytes.NewBuffer([]byte(value))
 	// gzip reader の生成
