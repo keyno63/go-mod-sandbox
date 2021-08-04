@@ -10,9 +10,9 @@ import (
 func GzipWrite(value string) (string, error) {
 
 	// byte buffer に書き込む
-	buf := bytes.NewBuffer([]byte(""))
+	buf := bytes.Buffer{}
 	// gzip writer の生成
-	gw := gzip.NewWriter(buf)
+	gw := gzip.NewWriter(&buf)
 	// 生の値を書き込む（gzip 圧縮する）
 	_, err := gw.Write([]byte(value))
 	if err != nil {
