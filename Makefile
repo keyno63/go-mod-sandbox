@@ -10,6 +10,9 @@ build:
 run:
 	go run cmd/app.go
 
+test:
+	go test -v -count=1 -race -cover ./...
+
 builddocker:
 	docker run --rm -v ${PWD}:/app -w /app ${GOIMAGE} make build
 
