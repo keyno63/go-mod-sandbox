@@ -6,3 +6,9 @@ go module の使い方を確認するようのもの
 - Local でビルド・ Run できる
 - Local の Docker でビルド・Run できる
 - Remote の Docker でビルド・Run できる
+
+## build
+
+```shell
+make build
+```
