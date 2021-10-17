@@ -1,5 +1,7 @@
 # go mod sandbox
 
+[![Makefile CI](https://github.com/keyno63/go-mod-sandbox/actions/workflows/makefile.yml/badge.svg)](https://github.com/keyno63/go-mod-sandbox/actions/workflows/makefile.yml)
+
 ## Purpose
 go module の使い方を確認するようのもの  
 
