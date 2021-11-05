@@ -1,0 +1,18 @@
+# https://github.com/golangci/golangci-lint/blob/master/.golangci.example.yml
+run:
+  tests: false
+  timeout: 1m
+
+linters:
+  disable-all: true
+  enable:
+    - megacheck
+    - revive
+#  presets:
+#    - bugs
+#    - unused
+issues:
+  exclude-rules:
+    - linters:
+        - staticcheck
+      text: "SA4010:"
