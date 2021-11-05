@@ -13,9 +13,9 @@ import (
 // 後で gomock で差し替える
 type mockRepository struct{}
 
-func (m mockRepository) GetUser(id string) (*model.UserAccount, error) {
+func (m mockRepository) GetUser(ID string) (*model.UserAccount, error) {
 	return &model.UserAccount{
-		Id:        "1",
+		ID:        "1",
 		FirstName: "first_name",
 		LastName:  "last_name",
 	}, nil
@@ -23,7 +23,7 @@ func (m mockRepository) GetUser(id string) (*model.UserAccount, error) {
 
 type errorMockRepository struct{}
 
-func (m errorMockRepository) GetUser(id string) (*model.UserAccount, error) {
+func (m errorMockRepository) GetUser(ID string) (*model.UserAccount, error) {
 	return nil, fmt.Errorf("error")
 }
 
@@ -34,7 +34,7 @@ func TestUserServiceImpl_GetUser(t *testing.T) {
 		userRepository repository.UserRepository
 	}
 	type args struct {
-		id string
+		ID string
 	}
 	tests := []struct {
 		name    string
@@ -49,10 +49,10 @@ func TestUserServiceImpl_GetUser(t *testing.T) {
 				userRepository: mock,
 			},
 			args: args{
-				id: "1",
+				ID: "1",
 			},
 			want: &model.UserAccount{
-				Id:        "1",
+				ID:        "1",
 				FirstName: "first_name",
 				LastName:  "last_name",
 			},
@@ -64,7 +64,7 @@ func TestUserServiceImpl_GetUser(t *testing.T) {
 				userRepository: errorMock,
 			},
 			args: args{
-				id: "1",
+				ID: "1",
 			},
 			want:    nil,
 			wantErr: true,
@@ -75,7 +75,7 @@ func TestUserServiceImpl_GetUser(t *testing.T) {
 			us := UserServiceImpl{
 				userRepository: tt.fields.userRepository,
 			}
-			got, err := us.GetUser(tt.args.id)
+			got, err := us.GetUser(tt.args.ID)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("GetUser() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -95,7 +95,7 @@ func TestUserServiceImpl_GetUser_(t *testing.T) {
 
 	// 戻り値の設定
 	ret := model.UserAccount{
-		Id:        "1",
+		ID:        "1",
 		FirstName: "name",
 	}
 	// mock の振る舞い定義
