@@ -15,6 +15,7 @@ jobs:
         run: make lint
 
   build:
+    needs: [lint]
 
     runs-on: ubuntu-latest
 
