@@ -1,4 +1,4 @@
-module go-mod2
+module go-mod-sandbox
 
 go 1.16
 

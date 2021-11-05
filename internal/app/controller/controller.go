@@ -1,8 +1,8 @@
 package controller
 
 import (
-	"go-mod2/internal/app/model"
-	"go-mod2/internal/app/service"
+	"go-mod-sandbox/internal/app/model"
+	"go-mod-sandbox/internal/app/service"
 )
 
 /*

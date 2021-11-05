@@ -3,9 +3,9 @@ package service
 import (
 	"fmt"
 	"github.com/golang/mock/gomock"
-	"go-mod2/internal/app/model"
-	"go-mod2/internal/app/repository"
-	"go-mod2/mock"
+	"go-mod-sandbox/internal/app/model"
+	"go-mod-sandbox/internal/app/repository"
+	"go-mod-sandbox/mock"
 	"reflect"
 	"testing"
 )

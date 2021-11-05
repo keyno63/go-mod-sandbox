@@ -5,13 +5,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gocql/gocql"
-	"go-mod2/internal/app/controller"
-	"go-mod2/internal/app/model"
-	"go-mod2/internal/app/repository"
-	"go-mod2/internal/app/service"
-	"go-mod2/internal/cassandra"
-	"go-mod2/internal/libs/gzip"
-	"go-mod2/internal/rdb"
+	"go-mod-sandbox/internal/app/controller"
+	"go-mod-sandbox/internal/app/model"
+	"go-mod-sandbox/internal/app/repository"
+	"go-mod-sandbox/internal/app/service"
+	"go-mod-sandbox/internal/cassandra"
+	"go-mod-sandbox/internal/libs/gzip"
+	"go-mod-sandbox/internal/rdb"
 	"io"
 	"log"
 	"net/http"
@@ -54,12 +54,12 @@ func main() {
 				w.Header().Add(k, v)
 			}
 			w.WriteHeader(403)
-			ret, err := gzip.GzipWrite(v)
+			ret, err := gzip.Write(v)
 			if err != nil {
 				fmt.Println("error1")
 				fmt.Println(err.Error())
 			}
-			unzipped, err := gzip.GzipRead(ret)
+			unzipped, err := gzip.Read(ret)
 			if err != nil {
 				fmt.Println("error2")
 				fmt.Println(err.Error())

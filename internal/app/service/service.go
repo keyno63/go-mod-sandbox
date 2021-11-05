@@ -3,8 +3,8 @@
 package service
 
 import (
-	"go-mod2/internal/app/model"
-	"go-mod2/internal/app/repository"
+	"go-mod-sandbox/internal/app/model"
+	"go-mod-sandbox/internal/app/repository"
 )
 
 /*

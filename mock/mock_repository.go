@@ -5,7 +5,7 @@
 package mock
 
 import (
-	model "go-mod2/internal/app/model"
+	model "go-mod-sandbox/internal/app/model"
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
