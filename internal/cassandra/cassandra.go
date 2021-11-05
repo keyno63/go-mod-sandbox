@@ -1,6 +1,7 @@
 package cassandra
 
 import (
+	"errors"
 	"fmt"
 	"github.com/gocql/gocql"
 	"net/http"
@@ -16,7 +17,7 @@ func (c Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if err := c.Session.Query("SELECT * FROM test_table;").
 		Scan(&id, &data, &updateTime); err != nil {
 		fmt.Println("failed")
-		if err == gocql.ErrNotFound {
+		if errors.Is(err, gocql.ErrNotFound) {
 			fmt.Println("ErrNotFound")
 		}
 		fmt.Println(err.Error())

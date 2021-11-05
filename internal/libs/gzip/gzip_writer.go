@@ -7,8 +7,8 @@ import (
 	"net/http"
 )
 
-// GzipWrite は文字列 value を gzip 圧縮して書き込む
-func GzipWrite(value string) (string, error) {
+// Write は文字列 value を gzip 圧縮して書き込む
+func Write(value string) (string, error) {
 
 	// byte buffer に書き込む
 	buf := bytes.Buffer{}
@@ -18,13 +18,13 @@ func GzipWrite(value string) (string, error) {
 	_, err := gw.Write([]byte(value))
 	if err != nil {
 		_ = gw.Close()
-		return "", fmt.Errorf("failed to write. error=[%s].", err.Error())
+		return "", fmt.Errorf("failed to write. error=[%w]", err)
 	}
 
 	err = gw.Flush()
 	if err != nil {
 		_ = gw.Close()
-		return "", fmt.Errorf("failed to flush. error=[%s].", err.Error())
+		return "", fmt.Errorf("failed to flush. error=[%w]", err)
 	}
 	// compress 後の値を返したい場合は
 	// defer ではなく return　前に閉じる
@@ -32,14 +32,14 @@ func GzipWrite(value string) (string, error) {
 	return buf.String(), nil
 }
 
-// GzipRead は gzip 圧縮された文字列 value の読み込み
-func GzipRead(value string) (string, error) {
+// Read は gzip 圧縮された文字列 value の読み込み
+func Read(value string) (string, error) {
 	// 読み込みたいgzip圧縮された値を byte buffer に変換
 	buf := bytes.NewBuffer([]byte(value))
 	// gzip reader の生成
 	gr, err := gzip.NewReader(buf)
 	if err != nil {
-		return "", fmt.Errorf("failed to create gzip reader. error=[%s].", err.Error())
+		return "", fmt.Errorf("failed to create gzip reader. error=[%s]", err.Error())
 	}
 	defer gr.Close()
 
@@ -48,14 +48,14 @@ func GzipRead(value string) (string, error) {
 	// gzip 圧縮された文字の読み込み、解凍
 	_, err = result.ReadFrom(gr)
 	if err != nil {
-		return "", fmt.Errorf("failed to read. error=[%s].", err.Error())
+		return "", fmt.Errorf("failed to read. error=[%w]", err)
 	}
 
 	return result.String(), nil
 }
 
-// GzipHttpWriter は HTTP Response の書き出し
-func GzipHttpWriter(w http.ResponseWriter, statusCode int, headerMap map[string]string, body string) {
+// HTTPWriter は HTTP Response の書き出し
+func HTTPWriter(w http.ResponseWriter, statusCode int, headerMap map[string]string, body string) {
 	// Header などの書き込み設定がしたければ
 	for k, v := range headerMap {
 		w.Header().Add(k, v)
@@ -69,6 +69,6 @@ func GzipHttpWriter(w http.ResponseWriter, statusCode int, headerMap map[string]
 	// body の書き込み、表示
 	_, err := gw.Write([]byte(body))
 	if err != nil {
-		_ = fmt.Errorf("failed to write. error=[%s]", err.Error())
+		_ = fmt.Errorf("failed to write. error=[%w]", err)
 	}
 }

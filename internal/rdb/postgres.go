@@ -28,7 +28,7 @@ func (p PostgresHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		err := p.Db.QueryRow("SELECT id, updated_at FROM sandbox_json_table where id = $1", id).
 			Scan(&dto.id, &dto.update)
 		if err != nil {
-			fmt.Errorf("error %s", err.Error())
+			_ = fmt.Errorf("error %w", err)
 			w.Header().Set("Content-Type", "application/json")
 			_, _ = w.Write([]byte("ng"))
 			return
@@ -50,7 +50,7 @@ func (p PostgresHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(time.Now())
 		id, _ := strconv.Atoi(r.FormValue("id"))
 		data := Data{
-			Id:       id,
+			ID:       id,
 			Name:     r.FormValue("name"),
 			Category: r.FormValue("c"),
 		}
@@ -103,17 +103,17 @@ func (p PostgresHandler) asyncWriteSandboxTable(d Data, channel chan<- struct{})
 	}()
 }
 
-func hoge(channel chan<- struct{}) {
-	channel <- struct{}{}
-	fmt.Println("empty add channel")
-}
-
-func hoge2(channel chan<- struct{}) {
-	go func() {
-		channel <- struct{}{}
-		fmt.Println("empty add channel")
-	}()
-}
+//func hoge(channel chan<- struct{}) {
+//	channel <- struct{}{}
+//	fmt.Println("empty add channel")
+//}
+//
+//func hoge2(channel chan<- struct{}) {
+//	go func() {
+//		channel <- struct{}{}
+//		fmt.Println("empty add channel")
+//	}()
+//}
 
 func (p PostgresHandler) syncWriteSandboxTable(d Data) (*sql.Result, error) {
 	ins, err := p.Db.Prepare("INSERT INTO sandbox_table VALUES($1,$2,$3)")
@@ -121,7 +121,7 @@ func (p PostgresHandler) syncWriteSandboxTable(d Data) (*sql.Result, error) {
 		log.Fatal("failed Prepare:", err)
 		return nil, err
 	}
-	r, err := ins.Exec(d.Id, d.Name, d.Category)
+	r, err := ins.Exec(d.ID, d.Name, d.Category)
 	if err != nil {
 		log.Fatal("failed Exec:", err)
 		return nil, err
@@ -142,7 +142,7 @@ func (p PostgresHandler) getSandboxTable() []Data {
 	var data []Data
 	for rows.Next() {
 		var d Data
-		err := rows.Scan(&d.Id, &d.Name, &d.Category)
+		err := rows.Scan(&d.ID, &d.Name, &d.Category)
 		if err != nil {
 			log.Fatalln("取得失敗", err)
 		}
@@ -152,7 +152,7 @@ func (p PostgresHandler) getSandboxTable() []Data {
 }
 
 type Data struct {
-	Id       int    `json:"id"`
+	ID       int    `json:"id"`
 	Name     string `json:"name"`
 	Category string `json:"category"`
 }

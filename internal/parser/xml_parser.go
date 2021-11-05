@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-func isParsableXml(value string) bool {
+func isParsableXML(value string) bool {
 	if err := xml.Unmarshal([]byte(value), &struct{}{}); err != nil {
 		fmt.Printf("failed to paese xml, value = [%s], reason = [%s]\n", value, err.Error())
 		return false

@@ -10,15 +10,22 @@ import (
 	"go-mod2/internal/app/repository"
 	"go-mod2/internal/app/service"
 	"go-mod2/internal/cassandra"
+	"go-mod2/internal/libs/gzip"
 	"go-mod2/internal/rdb"
+	"io"
 	"log"
 	"net/http"
+	"os"
+
+	"gopkg.in/go-ini/ini.v1"
 )
 
 // 実行関数
 func main() {
 	// Http Handler の設定
 	mux := http.NewServeMux()
+	//LoadConfig()
+	//LoggingSettings(Config.LogFile)
 
 	// db 初期化
 	db, err := sql.Open("postgres", "postgres://postgres:pass@127.0.01:5432/postgres?sslmode=disable")
@@ -33,6 +40,33 @@ func main() {
 
 		pHandler, _ := NewPostgresHandler(db)
 		mux.Handle("/api/go-app/psql", pHandler)
+		mux.HandleFunc("/api/gzip", func(w http.ResponseWriter, r *http.Request) {
+			v := r.FormValue("k")
+			header := map[string]string{
+				//"Content-Type": "application/json",
+				"Content-Type":     "text/plain",
+				"Content-Encoding": "gzip",
+			}
+			//gzip.HTTPWriter(w, 403, header, v)
+
+			//
+			for k, v := range header {
+				w.Header().Add(k, v)
+			}
+			w.WriteHeader(403)
+			ret, err := gzip.GzipWrite(v)
+			if err != nil {
+				fmt.Println("error1")
+				fmt.Println(err.Error())
+			}
+			unzipped, err := gzip.GzipRead(ret)
+			if err != nil {
+				fmt.Println("error2")
+				fmt.Println(err.Error())
+			}
+			fmt.Println(unzipped)
+			_, _ = w.Write([]byte(ret))
+		})
 	}
 	defer db.Close()
 
@@ -91,6 +125,8 @@ func NewHandler(db *sql.DB) Handler {
 
 func (h handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
+	fmt.Println(r.URL.Path)
+
 	userId := r.FormValue("user_id")
 	user, err := h.app.ExecGetUser(userId)
 	if err != nil {
@@ -115,7 +151,7 @@ func (h handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		fmt.Printf("occured error: %s \n", err.Error())
 	}
 
-	fmt.Printf("write ret: %d\n",ret)
+	fmt.Printf("write ret: %d\n", ret)
 }
 
 /**
@@ -130,4 +166,36 @@ type App struct {
 
 func (app App) ExecGetUser(id string) (*model.UserAccount, error) {
 	return app.userController.GetUser(id)
+}
+
+type ConfigList struct {
+	Port      string
+	SQLDriver string
+	DbName    string
+	LogFile   string
+}
+
+var Config ConfigList
+
+func LoadConfig() {
+	cfg, err := ini.Load("config.ini")
+	if err != nil {
+		log.Fatalln(err)
+	}
+	Config = ConfigList{
+		Port:      cfg.Section("web").Key("port").MustString("8080"),
+		SQLDriver: cfg.Section("db").Key("driver").String(),
+		DbName:    cfg.Section("db").Key("name").String(),
+		LogFile:   cfg.Section("web").Key("logfile").String(),
+	}
+}
+
+func LoggingSettings(logFile string) {
+	logfile, err := os.OpenFile(logFile, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	multiLogFile := io.MultiWriter(os.Stdout, logfile)
+	log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)
+	log.SetOutput(multiLogFile)
 }

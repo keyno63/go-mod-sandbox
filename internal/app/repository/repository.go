@@ -36,13 +36,13 @@ func (us UserRepositoryImpl) GetUser(id string) (*model.UserAccount, error) {
 	defer rows.Close()
 
 	var ua dto.UserDto
-	if err := rows.Scan(&ua.Id, &ua.FirstName, &ua.LastName); err == nil {
+	if err := rows.Scan(&ua.ID, &ua.FirstName, &ua.LastName); err == nil {
 		return nil, err
 	}
 
-	i := strconv.Itoa(ua.Id)
+	i := strconv.Itoa(ua.ID)
 	return &model.UserAccount{
-		Id:        i,
+		ID:        i,
 		FirstName: ua.FirstName,
 		LastName:  ua.LastName,
 	}, nil

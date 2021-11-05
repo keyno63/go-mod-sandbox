@@ -29,19 +29,19 @@ func TestGzipWrite(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := GzipWrite(tt.args.value)
+			got, err := Write(tt.args.value)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("GzipWrite() error = %+v, wantErr %+v", err, tt.wantErr)
+				t.Errorf("Write() error = %+v, wantErr %+v", err, tt.wantErr)
 				return
 			}
 
-			actual, err := GzipRead(got)
+			actual, err := Read(got)
 			if err != nil {
 				fmt.Println(err.Error())
-				t.Errorf("GzipWrite() failed to read ret gzip value. got = %+v, value %+v", got, tt.args.value)
+				t.Errorf("Write() failed to read ret gzip value. got = %+v, value %+v", got, tt.args.value)
 			}
 			if actual != tt.want {
-				t.Errorf("GzipWrite() actual = %+v, want %+v", actual, tt.want)
+				t.Errorf("Write() actual = %+v, want %+v", actual, tt.want)
 			}
 		})
 	}
@@ -81,7 +81,7 @@ func TestGzipHttpWriter(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			w := httptest.NewRecorder()
-			GzipHttpWriter(w, tt.args.statusCode, tt.args.headerMap, tt.args.body)
+			HTTPWriter(w, tt.args.statusCode, tt.args.headerMap, tt.args.body)
 			result := w.Result()
 			// status code
 			if !reflect.DeepEqual(result.StatusCode, tt.args.statusCode) {
@@ -95,7 +95,7 @@ func TestGzipHttpWriter(t *testing.T) {
 			}
 
 			// body
-			body, err := GzipRead(w.Body.String())
+			body, err := Read(w.Body.String())
 			if err != nil {
 				t.Errorf("failed to read. reason=[%s].", err.Error())
 				return
