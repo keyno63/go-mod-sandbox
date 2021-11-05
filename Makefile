@@ -13,8 +13,17 @@ run:
 test:
 	go test -v -count=1 -race -cover ./...
 
+getgolangci:
+	cd tools && go install github.com/golangci/golangci-lint/cmd/golangci-lint
+
+lint: getgolangci
+	golangci-lint run --config .golangci.yml
+
 builddocker:
 	docker run --rm -v ${PWD}:/app -w /app ${GOIMAGE} make build
+
+lintdocker:
+	docker run --rm -v ${PWD}:/app -w /app ${GOIMAGE} make lint
 
 rundocker: runcassandra
 	docker run --rm -v ${PWD}:/app -w /app -p 8080:8180 ${GOIMAGE} make run
