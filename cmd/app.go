@@ -127,8 +127,8 @@ func (h handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println(r.URL.Path)
 
-	userId := r.FormValue("user_id")
-	user, err := h.app.ExecGetUser(userId)
+	userID := r.FormValue("user_id")
+	user, err := h.app.ExecGetUser(userID)
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json")
 		//_, _ = fmt.Fprintf(w, "sample handle")
