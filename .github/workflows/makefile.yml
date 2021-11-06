@@ -7,19 +7,19 @@ on:
     branches: [ master ]
 
 jobs:
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up Go
-        uses: actions/setup-go@v2
-        with:
-          go-version: 1.17
-      - name: check lint
-        run: make lint
+#  lint:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v2
+#      - name: Set up Go
+#        uses: actions/setup-go@v2
+#        with:
+#          go-version: 1.17
+#      - name: check lint
+#        run: make lint
 
   build:
-    needs: [lint]
+#    needs: [lint]
 
     runs-on: ubuntu-latest
 
