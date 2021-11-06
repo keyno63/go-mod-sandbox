@@ -11,6 +11,7 @@ import (
 	"go-mod-sandbox/internal/app/service"
 	"go-mod-sandbox/internal/cassandra"
 	"go-mod-sandbox/internal/libs/gzip"
+	"go-mod-sandbox/internal/parser"
 	"go-mod-sandbox/internal/rdb"
 	"io"
 	"log"
@@ -149,6 +150,10 @@ func (h handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	ret, err := w.Write(jsonUser)
 	if err != nil {
 		fmt.Printf("occured error: %s \n", err.Error())
+	}
+
+	if parser.Parseable("") {
+		fmt.Println("parseable")
 	}
 
 	fmt.Printf("write ret: %d\n", ret)
