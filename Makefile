@@ -4,6 +4,9 @@ GOIMAGE=golang:1.17-stretch
 CASSANDRAIMAGE=cassandra:4.0
 POSTGRESIMAGE=postgres:13.3
 
+imports:
+	go imports -l -w .
+
 build:
 	go build cmd/app.go
 
