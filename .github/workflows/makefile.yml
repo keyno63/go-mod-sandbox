@@ -42,7 +42,7 @@ jobs:
         go-version: 1.17
 
     - name: build test
-      run: make      
+      run: make build
 
   test:
     needs: [build]
