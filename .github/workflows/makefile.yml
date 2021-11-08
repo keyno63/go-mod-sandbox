@@ -19,6 +19,13 @@ jobs:
           go-version: 1.16
       - name: check lint
         run: make lint
+      - name: check imports
+        run: |
+          DIFF=$(goimports -l .)
+          if [ ! -z "$DIFF"] then
+            echo "failed to check goimports. diff: [$DIFF]"
+            return 1
+          fi
 
   build:
     needs: [lint]
