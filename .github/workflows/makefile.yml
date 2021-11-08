@@ -25,7 +25,7 @@ jobs:
           DIFF=$(goimports -l .)
           if [ ! -z "$DIFF"] then
             echo "failed to check goimports. diff: [$DIFF]"
-            return 1
+            exit 1
           fi
 
   build:
