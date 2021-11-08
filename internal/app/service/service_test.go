@@ -2,12 +2,13 @@ package service
 
 import (
 	"fmt"
-	"github.com/golang/mock/gomock"
 	"go-mod-sandbox/internal/app/model"
 	"go-mod-sandbox/internal/app/repository"
 	"go-mod-sandbox/mock"
 	"reflect"
 	"testing"
+
+	"github.com/golang/mock/gomock"
 )
 
 // 後で gomock で差し替える

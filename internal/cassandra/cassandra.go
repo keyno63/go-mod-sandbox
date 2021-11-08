@@ -3,8 +3,9 @@ package cassandra
 import (
 	"errors"
 	"fmt"
-	"github.com/gocql/gocql"
 	"net/http"
+
+	"github.com/gocql/gocql"
 )
 
 type Handler struct {

@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	"github.com/gocql/gocql"
 	"go-mod-sandbox/internal/app/controller"
 	"go-mod-sandbox/internal/app/model"
 	"go-mod-sandbox/internal/app/repository"
@@ -17,6 +16,8 @@ import (
 	"log"
 	"net/http"
 	"os"
+
+	"github.com/gocql/gocql"
 
 	"gopkg.in/go-ini/ini.v1"
 )
