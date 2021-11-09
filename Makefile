@@ -36,3 +36,12 @@ runcassandra:
 
 runpostgres:
 	docker run --rm -d -p 5432:5432 -e POSTGRES_PASSWORD=pass -v ${PWD}/docker/postgres/initdb:/docker-entrypoint-initdb.d ${POSTGRESIMAGE}
+
+buildeb:
+	GOARCH=amd64 GOOS=linux go build -o build/bin/application cmd/app.go
+	# on docker case
+	apt update && apt install -y zip
+	cd build && zip -r ../app.zip *
+
+buildforerasticbeans:
+	docker run --rm -v ${PWD}:/app -w /app ${GOIMAGE} make buildeb
