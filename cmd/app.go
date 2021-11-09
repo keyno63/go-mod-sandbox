@@ -34,6 +34,12 @@ func main() {
 	if err != nil {
 		log.Fatalln("接続失敗", err)
 	} else {
+
+		// Health Check
+		mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+			_, _ = w.Write([]byte(`OK`))
+		})
+
 		handler := NewHandler(db)
 		mux.Handle("/api/go-app/handle", handler)
 		mux.HandleFunc("/api/go-app/handle2", func(w http.ResponseWriter, r *http.Request) {
