@@ -85,7 +85,8 @@ func main() {
 
 	// server の起動設定
 	server := http.Server{
-		Addr:    ":8180",
+		//Addr:    ":8180",
+		Addr:    ":5000",
 		Handler: mux,
 	}
 
