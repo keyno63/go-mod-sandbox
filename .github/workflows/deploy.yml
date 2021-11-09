@@ -1,0 +1,34 @@
+name: Deploy master
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout source code
+        uses: actions/checkout@v2
+
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.17
+
+      - name: Generate deployment package
+        run: |
+          GOARCH=amd64 GOOS=linux go build -o build/bin/application cmd/app.go
+          cd build && zip -r ../app.zip *
+
+      - name: Deploy to EB
+        uses: einaregilsson/beanstalk-deploy@v18
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          application_name: GoModSandbox
+          environment_name: GoModSandbox-Environment
+          version_label: snapshot1
+          region: us-east-2
+          deployment_package: app.zip
