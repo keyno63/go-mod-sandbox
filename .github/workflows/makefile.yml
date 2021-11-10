@@ -14,9 +14,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v2
         with:
-          # go 1.17 だと golangci-lint が error になる
-          # https://github.com/golangci/golangci-lint/issues/2292
-          go-version: 1.16
+          go-version: 1.17
       - name: check lint
         run: make lint
       - name: check imports
