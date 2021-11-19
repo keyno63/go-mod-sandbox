@@ -28,7 +28,7 @@ make build
 or, run to build on docker.
 
 ```shell
-make buildondockr
+make builddockr
 ```
 
 ### run
@@ -44,7 +44,7 @@ make run
 run to run on docker.
 
 ```shell
-make runondocker
+make rundocker
 ```
 
 ### test
