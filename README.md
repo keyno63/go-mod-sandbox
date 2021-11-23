@@ -3,7 +3,7 @@
 [![Makefile CI](https://github.com/keyno63/go-mod-sandbox/actions/workflows/makefile.yml/badge.svg)](https://github.com/keyno63/go-mod-sandbox/actions/workflows/makefile.yml)
 
 ## Purpose
-go module の使い方を確認するようのもの  
+go module の使い方を確認するようのレポジトリ  
 
 以下を目指している
 - Local でビルド・ Run できる
