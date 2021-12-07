@@ -3,11 +3,12 @@ package handler
 import (
 	"database/sql"
 	"fmt"
-	"github.com/gocql/gocql"
 	"go-mod-sandbox/internal/cassandra"
 	"go-mod-sandbox/internal/libs/gzip"
 	"go-mod-sandbox/internal/rdb"
 	"net/http"
+
+	"github.com/gocql/gocql"
 )
 
 const (
