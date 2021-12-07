@@ -20,7 +20,7 @@ lint: getgolangci
 	golangci-lint run --config .golangci.yml
 
 imports:
-	go imports -l -w .
+	goimports -l -w .
 
 builddocker:
 	docker run --rm -v ${PWD}:/app -w /app ${GOIMAGE} make build
