@@ -6,14 +6,20 @@ import (
 	"net/http"
 )
 
+const (
+	//typeApplicationJson = "application/json"
+	typeTextPlain = "text/plain"
+	encodingGzip  = "gzip"
+)
+
 // gzipFunc　は関数定義を返す関数
 func gzipFunc() func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		v := r.FormValue("k")
 		header := map[string]string{
-			//"Content-Type": "application/json",
-			"Content-Type":     "text/plain",
-			"Content-Encoding": "gzip",
+			//"Content-Type": typeApplicationJson,
+			"Content-Type":     typeTextPlain,
+			"Content-Encoding": encodingGzip,
 		}
 		for k, v := range header {
 			w.Header().Add(k, v)
