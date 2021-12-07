@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"go-mod-sandbox/internal/app/controller"
-	"go-mod-sandbox/internal/app/model"
+	"go-mod-sandbox/internal/app/domain/model"
 	"go-mod-sandbox/internal/app/repository"
 	"go-mod-sandbox/internal/app/service"
 	"go-mod-sandbox/internal/cassandra"

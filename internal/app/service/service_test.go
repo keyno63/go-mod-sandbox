@@ -2,7 +2,7 @@ package service
 
 import (
 	"fmt"
-	"go-mod-sandbox/internal/app/model"
+	"go-mod-sandbox/internal/app/domain/model"
 	"go-mod-sandbox/internal/app/repository"
 	"go-mod-sandbox/mock"
 	"reflect"

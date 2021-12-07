@@ -3,7 +3,7 @@
 package service
 
 import (
-	"go-mod-sandbox/internal/app/model"
+	"go-mod-sandbox/internal/app/domain/model"
 	"go-mod-sandbox/internal/app/repository"
 )
 

@@ -4,8 +4,8 @@ package repository
 
 import (
 	"database/sql"
-	"go-mod-sandbox/internal/app/model"
-	"go-mod-sandbox/internal/app/model/dto"
+	"go-mod-sandbox/internal/app/domain/model"
+	"go-mod-sandbox/internal/app/domain/model/dto"
 	"strconv"
 )
 

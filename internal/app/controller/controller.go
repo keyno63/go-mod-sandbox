@@ -1,7 +1,7 @@
 package controller
 
 import (
-	"go-mod-sandbox/internal/app/model"
+	"go-mod-sandbox/internal/app/domain/model"
 	"go-mod-sandbox/internal/app/service"
 )
 
