@@ -9,7 +9,6 @@ import (
 	"go-mod-sandbox/internal/app/repository"
 	"go-mod-sandbox/internal/app/service"
 	"go-mod-sandbox/internal/cassandra"
-	"go-mod-sandbox/internal/libs/gzip"
 	"go-mod-sandbox/internal/parser"
 	"go-mod-sandbox/internal/rdb"
 	"io"
@@ -47,33 +46,7 @@ func main() {
 
 		pHandler, _ := NewPostgresHandler(db)
 		mux.Handle("/api/go-app/psql", pHandler)
-		mux.HandleFunc("/api/gzip", func(w http.ResponseWriter, r *http.Request) {
-			v := r.FormValue("k")
-			header := map[string]string{
-				//"Content-Type": "application/json",
-				"Content-Type":     "text/plain",
-				"Content-Encoding": "gzip",
-			}
-			//gzip.HTTPWriter(w, 403, header, v)
-
-			//
-			for k, v := range header {
-				w.Header().Add(k, v)
-			}
-			w.WriteHeader(403)
-			ret, err := gzip.Write(v)
-			if err != nil {
-				fmt.Println("error1")
-				fmt.Println(err.Error())
-			}
-			unzipped, err := gzip.Read(ret)
-			if err != nil {
-				fmt.Println("error2")
-				fmt.Println(err.Error())
-			}
-			fmt.Println(unzipped)
-			_, _ = w.Write([]byte(ret))
-		})
+		mux.HandleFunc("/api/gzip", gzipFunc())
 	}
 	defer db.Close()
 
