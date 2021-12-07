@@ -8,15 +8,12 @@ import (
 	"go-mod-sandbox/internal/app/domain/model"
 	"go-mod-sandbox/internal/app/repository"
 	"go-mod-sandbox/internal/app/service"
-	"go-mod-sandbox/internal/cassandra"
+	libHandler "go-mod-sandbox/internal/libs/handler"
 	"go-mod-sandbox/internal/parser"
-	"go-mod-sandbox/internal/rdb"
 	"io"
 	"log"
 	"net/http"
 	"os"
-
-	"github.com/gocql/gocql"
 
 	"gopkg.in/go-ini/ini.v1"
 )
@@ -44,13 +41,13 @@ func main() {
 			handler.ServeHTTP(w, r)
 		})
 
-		pHandler, _ := NewPostgresHandler(db)
+		pHandler, _ := libHandler.NewPostgresHandler(db)
 		mux.Handle("/api/go-app/psql", pHandler)
-		mux.HandleFunc("/api/gzip", gzipFunc())
+		mux.HandleFunc("/api/gzip", libHandler.GzipFunc())
 	}
 	defer db.Close()
 
-	cHandler, err := NewCassandraHandler()
+	cHandler, err := libHandler.NewCassandraHandler()
 	if err == nil {
 		mux.Handle("/api/go-app/cass", cHandler)
 	}
@@ -66,35 +63,11 @@ func main() {
 	_ = server.ListenAndServe()
 }
 
-type Handler interface {
-	ServeHTTP(w http.ResponseWriter, r *http.Request)
-}
-
-func NewCassandraHandler() (Handler, error) {
-
-	cluster := gocql.NewCluster("127.0.0.1")
-	cluster.Keyspace = "test"
-	cluster.Consistency = gocql.Quorum
-
-	session, err := cluster.CreateSession()
-	if err != nil {
-		return nil, err
-	}
-
-	return cassandra.Handler{
-		Session: session,
-	}, nil
-}
-
-func NewPostgresHandler(db *sql.DB) (Handler, error) {
-	return rdb.PostgresHandler{Db: db}, nil
-}
-
 type handler struct {
 	app *App
 }
 
-func NewHandler(db *sql.DB) Handler {
+func NewHandler(db *sql.DB) libHandler.Handler {
 	// DI
 	r := repository.NewUserRepositoryImpl(db)
 	s := service.NewUserServiceImpl(r)
