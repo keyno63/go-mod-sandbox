@@ -29,7 +29,7 @@ lintdocker:
 	docker run --rm -v ${PWD}:/app -w /app ${GOIMAGE} make lint
 
 rundocker: runcassandra
-	docker run --rm -v ${PWD}:/app -w /app -p 8080:8180 ${GOIMAGE} make run
+	docker run --rm -v ${PWD}:/app -w /app -p 8080:5000 ${GOIMAGE} make run
 
 runcassandra:
 	docker run --rm -d -p 9042:9042 ${CASSANDRAIMAGE}
