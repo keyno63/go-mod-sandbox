@@ -1,0 +1,32 @@
+version: '3'
+services:
+  go-sandbox:
+#    build:
+#      context: ../
+#      dockerfile: ./Dockerfile
+    image: golang:1.17-stretch
+    tty: true
+    command:
+      - make
+      - run
+    volumes:
+      - ../:/app
+    working_dir: /app
+    ports:
+      - 8080:5000
+    networks:
+      - sandbox_network
+  cassandra:
+    image: cassandra:4.0
+    tty: true
+    ports:
+      - 9042:9042
+    networks:
+      - sandbox_network
+
+networks:
+  sandbox_network:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.20.0.0/16

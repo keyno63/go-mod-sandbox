@@ -45,3 +45,9 @@ buildeb:
 
 buildforerasticbeans:
 	docker run --rm -v ${PWD}:/app -w /app ${GOIMAGE} make buildeb
+
+compose:
+	docker compose -f ./docker/docker-compose.yaml up -d
+
+stop:
+	docker compose -f ./docker/docker-compose.yaml stop
