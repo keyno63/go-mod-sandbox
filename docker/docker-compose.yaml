@@ -1,19 +1,24 @@
 version: '3'
 services:
   go-sandbox:
-#    build:
-#      context: ../
-#      dockerfile: ./Dockerfile
-    image: golang:1.17-stretch
+    build:
+      context: .
+      dockerfile: ./Dockerfile
     tty: true
     command:
-      - make
-      - run
+      - air
+      - -c
+      - .air.toml
     volumes:
       - ../:/app
     working_dir: /app
     ports:
       - 8080:5000
+      - 2345:2345
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - seccomp:unconfined
     networks:
       - sandbox_network
   cassandra:
