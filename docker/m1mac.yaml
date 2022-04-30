@@ -1,0 +1,4 @@
+version: '3'
+services:
+  cassandra:
+    image: arm64v8/cassandra:4.0

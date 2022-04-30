@@ -49,5 +49,8 @@ buildforerasticbeans:
 compose:
 	docker compose -f ./docker/docker-compose.yaml up -d
 
+compose_m1:
+	docker compose -f ./docker/docker-compose.yaml -f ./docker/m1mac.yaml up -d
+
 stop:
 	docker compose -f ./docker/docker-compose.yaml stop
