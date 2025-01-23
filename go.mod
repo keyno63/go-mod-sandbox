@@ -5,7 +5,7 @@ go 1.18
 require (
 	github.com/gocql/gocql v1.4.0
 	github.com/golang/mock v1.6.0
-	github.com/lib/pq v1.10.6
+	github.com/lib/pq v1.10.9
 	gopkg.in/go-ini/ini.v1 v1.66.6
 )
 
