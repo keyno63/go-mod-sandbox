@@ -6,7 +6,7 @@ require (
 	github.com/gocql/gocql v1.4.0
 	github.com/golang/mock v1.6.0
 	github.com/lib/pq v1.10.9
-	gopkg.in/go-ini/ini.v1 v1.66.6
+	gopkg.in/go-ini/ini.v1 v1.67.0
 )
 
 require (
