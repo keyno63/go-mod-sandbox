@@ -29,22 +29,23 @@ func main() {
 	db, err := sql.Open("postgres", "postgres://postgres:pass@127.0.01:5432/postgres?sslmode=disable")
 	if err != nil {
 		log.Fatalln("接続失敗", err)
-	} else {
-		// Health Check
-		mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-			_, _ = w.Write([]byte(`OK`))
-		})
-
-		handler := NewHandler(db)
-		mux.Handle("/api/go-app/handle", handler)
-		mux.HandleFunc("/api/go-app/handle2", func(w http.ResponseWriter, r *http.Request) {
-			handler.ServeHTTP(w, r)
-		})
-
-		pHandler, _ := libHandler.NewPostgresHandler(db)
-		mux.Handle("/api/go-app/psql", pHandler)
-		mux.HandleFunc("/api/gzip", libHandler.GzipFunc())
 	}
+
+	// Health Check
+	mux.HandleFunc("/", func(w http.ResponseWriter, _ *http.Request) {
+		_, _ = w.Write([]byte(`OK`))
+	})
+
+	handler := NewHandler(db)
+	mux.Handle("/api/go-app/handle", handler)
+	mux.HandleFunc("/api/go-app/handle2", func(w http.ResponseWriter, r *http.Request) {
+		handler.ServeHTTP(w, r)
+	})
+
+	pHandler, _ := libHandler.NewPostgresHandler(db)
+	mux.Handle("/api/go-app/psql", pHandler)
+	mux.HandleFunc("/api/gzip", libHandler.GzipFunc())
+
 	defer db.Close()
 
 	cHandler, err := libHandler.NewCassandraHandler()
