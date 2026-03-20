@@ -31,7 +31,7 @@ func main() {
 		log.Fatalln("接続失敗", err)
 	} else {
 		// Health Check
-		mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		mux.HandleFunc("/", func(w http.ResponseWriter, _ *http.Request) {
 			_, _ = w.Write([]byte(`OK`))
 		})
 

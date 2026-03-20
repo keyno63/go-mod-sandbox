@@ -12,7 +12,7 @@ type Handler struct {
 	Session *gocql.Session
 }
 
-func (c Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (c Handler) ServeHTTP(w http.ResponseWriter, _ *http.Request) {
 	var id, data, updateTime string
 	// SELECT 文は Scan?
 	if err := c.Session.Query("SELECT * FROM test_table;").
