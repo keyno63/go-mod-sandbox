@@ -1,8 +1,8 @@
 package myerrors
 
 type MyError struct {
-	errorCode int
-	message   string
+	//errorCode int
+	message string
 }
 
 func (e MyError) Error() string {
