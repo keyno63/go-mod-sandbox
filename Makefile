@@ -14,7 +14,7 @@ test:
 	go test -v -count=1 -race -cover ./...
 
 getgolangci:
-	cd tools && go install github.com/golangci/golangci-lint/cmd/golangci-lint
+	go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
 
 lint: getgolangci
 	golangci-lint run --config .golangci.yml
