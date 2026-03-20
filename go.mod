@@ -1,6 +1,6 @@
 module go-mod-sandbox
 
-go 1.18
+go 1.25
 
 require (
 	github.com/gocql/gocql v1.7.0
